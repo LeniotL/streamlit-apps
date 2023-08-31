@@ -1,6 +1,5 @@
 
 import streamlit as st
-import pandas as pd
 import pickle
 
 # Load the model and data using pickle
