@@ -1,13 +1,13 @@
 
 import streamlit as st
+import pandas as pd
 import pickle
 
 # Load the model and data using pickle
 with open('cosine_sim.pkl', 'rb') as f:
     cosine_sim = pickle.load(f)
 
-with open('restaurants.pkl', 'rb') as f:
-    restaurants = pickle.load(f)
+restaurants = pd.read_csv('restaurants.csv')
 
 def recommend(restaurant_name, cosine_sim=cosine_sim):
     idx = restaurants[restaurants['name'] == restaurant_name].index[0]
