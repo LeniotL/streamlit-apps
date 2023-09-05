@@ -1,9 +1,9 @@
 streamlit
-streamlit-lottie
 pandas
 numpy
-googletrans==4.0.0-rc1
+scikit-learn
 boto3
 s3fs
-googletransx
-scikit-learn
+h5py
+requests
+streamlit_lottie
