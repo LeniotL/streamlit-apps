@@ -9,12 +9,14 @@ import io
 import s3fs
 import h5py
 import requests
+import json
+from geocoding import get_coordinates_from_address
 
 # Load pre-computed cosine similarities and the restaurant dataset
 #with h5py.File('model/cosine_sim.h5', 'r') as hf:
 #    cosine_sim = hf['cosine_similarity'][:]
 
-with h5py.File('compressed_cosine_sim.h5', 'r') as file:
+with h5py.File('model/compressed_cosine_sim.h5', 'r') as file:
     cosine_sim = file['cosine_similarity'][:]
 
 
@@ -23,46 +25,14 @@ restaurants = pd.read_csv('model/restaurants_model.csv')
 # Drop unnecessary columns to leave only genre features
 genres_df = restaurants.drop(columns=['name', 'genre', 'rating_val', 'nearest_station', 'address'])
 
-# Geocoding function
-def get_coordinates_from_address(address):
-    API_KEY = "lgJni2MDMSvRTqVguba17QMqzjMmwkWx"
-    url = f"https://geloky.com/api/geo/geocode?address={address}&key={API_KEY}&format=geloky"
-
-    TOKYO_LAT = 35.6895
-    TOKYO_LONG = 139.6917
-
-    response = requests.get(url)
-
-    if response.status_code == 200:
-        data = response.json()
-
-        # Check if the list is empty
-        if not data:
-            print(f"No matching results for address: {address}")
-            return TOKYO_LAT, TOKYO_LONG  # Default Tokyo coordinates
-
-        result = data[0]  # Access the first dictionary in the list
-        latitude = result["latitude"]
-        longitude = result["longitude"]
-        return latitude, longitude
-    else:
-        print(f"Request failed with status code {response.status_code}")
-        return TOKYO_LAT, TOKYO_LONG  # Default Tokyo coordinates in case of an API failure
 
 
+# Load the Lottie JSON data from the local file
+with open('lottie_data.json', 'r') as file:
+    lottie_data_from_file = json.load(file)
 
-# Function to load animation from Lottie
-def load_lottie_url(url: str):
-    import requests
-    r = requests.get(url)
-    if r.status_code != 200:
-        return None
-    return r.json()
-
-# Display a Lottie animation
-lottie_url = "https://lottie.host/5870e9fb-3411-4d1b-9eb9-53bf39503d08/wQBcaepzHp.json"
-lottie_json = load_lottie_url(lottie_url)
-st_lottie(lottie_json, speed=1, width=800, height=500, key="initial")
+# Display the Lottie animation using the loaded data
+st_lottie(lottie_data_from_file, speed=1, width=800, height=500, key="initial")
 
 
 # Function to recommend restaurants based on selected genres and optionally, a nearest station
