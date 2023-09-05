@@ -16,11 +16,11 @@ from geocoding import get_coordinates_from_address
 #with h5py.File('model/cosine_sim.h5', 'r') as hf:
 #    cosine_sim = hf['cosine_similarity'][:]
 
-with h5py.File('model/compressed_cosine_sim.h5', 'r') as file:
+with h5py.File('compressed_cosine_sim.h5', 'r') as file:
     cosine_sim = file['cosine_similarity'][:]
 
 
-restaurants = pd.read_csv('model/restaurants_model.csv')
+restaurants = pd.read_csv('restaurants_model.csv')
 
 # Drop unnecessary columns to leave only genre features
 genres_df = restaurants.drop(columns=['name', 'genre', 'rating_val', 'nearest_station', 'address'])
