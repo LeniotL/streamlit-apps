@@ -3,7 +3,7 @@ import streamlit as st
 import requests
 
 def get_coordinates_from_address(address):
-    API_KEY = st.secrets["API_KEY"]
+    API_KEY = st.secrets[API_KEY]
     url = f"https://geloky.com/api/geo/geocode?address={address}&key={API_KEY}&format=geloky"
 
     TOKYO_LAT = 35.6895
