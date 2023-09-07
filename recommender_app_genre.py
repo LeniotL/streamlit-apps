@@ -12,31 +12,29 @@ import requests
 import json
 from geocoding import get_coordinates_from_address
 
-# Load pre-computed cosine similarities and the restaurant dataset
-#with h5py.File('model/cosine_sim.h5', 'r') as hf:
-#    cosine_sim = hf['cosine_similarity'][:]
 
+# Load pre-computed cosine similarities and the restaurant dataset
 with h5py.File('compressed_cosine_sim.h5', 'r') as file:
     cosine_sim = file['cosine_similarity'][:]
 
-
 restaurants = pd.read_csv('restaurants_model.csv')
+
 
 # Drop unnecessary columns to leave only genre features
 genres_df = restaurants.drop(columns=['name', 'genre', 'rating_val', 'nearest_station', 'address'])
-
 
 
 # Load the Lottie JSON data from the local file
 with open('lottie_data.json', 'r') as file:
     lottie_data_from_file = json.load(file)
 
+    
 # Display the Lottie animation using the loaded data
 st_lottie(lottie_data_from_file, speed=1, width=800, height=500, key="initial")
 
 
 # Function to recommend restaurants based on selected genres and optionally, a nearest station
-def recommend_by_genre(input_genres, nearest_station=None, cosine_sim=cosine_sim, min_similarity=0.5):
+def recommend_by_genre(input_genres, nearest_station=None, cosine_sim=cosine_sim, min_similarity=0.0):
     # Check if all selected genres exist in the dataset
     for genre in input_genres:
         if genre not in genres_df.columns:
@@ -75,6 +73,7 @@ selected_genres = st.multiselect(
     "Select genres to get restaurant recommendations:", genres_df.columns
 )
 selected_station = st.selectbox("Choose a nearby station:", restaurants['nearest_station'].unique())
+
 
 # Button to get recommendations
 if st.button("Recommend"):
