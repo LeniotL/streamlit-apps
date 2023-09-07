@@ -34,7 +34,7 @@ st_lottie(lottie_data_from_file, speed=1, width=800, height=500, key="initial")
 
 
 # Function to recommend restaurants based on selected genres and optionally, a nearest station
-def recommend_by_genre(input_genres, nearest_station=None, cosine_sim=cosine_sim, min_similarity=0.0):
+def recommend_by_genre(input_genres, nearest_station=None, cosine_sim=cosine_sim, min_similarity=0):
     # Check if all selected genres exist in the dataset
     for genre in input_genres:
         if genre not in genres_df.columns:
@@ -84,7 +84,9 @@ if st.button("Recommend"):
     recommended_data = pd.merge(recommended_data, restaurants[['name', 'address']], left_on='Name', right_on='name', how='left')
 
     # Geocode the addresses of the recommended restaurants only
-    recommended_data['latitude'], recommended_data['longitude'] = zip(*recommended_data['address'].map(get_coordinates_from_address))
+    get_coords = lambda address: get_coordinates_from_address(address)
+    recommended_data['latitude'], recommended_data['longitude'] = zip(*recommended_data['address'].map(get_coords))
+
     st.table(recommended_data[['Name', 'Rating', 'Nearest Station']])
 
     # Display map
