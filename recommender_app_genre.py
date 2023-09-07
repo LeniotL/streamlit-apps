@@ -84,8 +84,7 @@ if st.button("Recommend"):
     recommended_data = pd.merge(recommended_data, restaurants[['name', 'address']], left_on='Name', right_on='name', how='left')
 
     # Geocode the addresses of the recommended restaurants only
-    get_coords = lambda address: get_coordinates_from_address(address)
-    recommended_data['latitude'], recommended_data['longitude'] = zip(*recommended_data['address'].map(get_coords))
+    recommended_data['latitude'], recommended_data['longitude'] = zip(*recommended_data['address'].map(get_coordinates_from_address))
 
     st.table(recommended_data[['Name', 'Rating', 'Nearest Station']])
 
