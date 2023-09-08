@@ -78,18 +78,25 @@ selected_station = st.selectbox("Choose a nearby station:", restaurants['nearest
 # Button to get recommendations
 if st.button("Recommend"):
     recommended_data = recommend_by_genre(selected_genres, selected_station)
-    recommended_data = recommended_data.rename(columns={"name": "Name", "rating_val": "Rating", "nearest_station": "Nearest Station"})
     
-    # Ensure that 'address' column is present in recommended_data
-    recommended_data = pd.merge(recommended_data, restaurants[['name', 'nearest_station', 'address']], 
-                            left_on=['Name', 'Nearest Station'], 
-                            right_on=['name', 'nearest_station'], 
-                            how='left').drop_duplicates()
+    # Check if the result is a string (indicating an error message) or an empty dataframe
+    if isinstance(recommended_data, str):
+        st.write(recommended_data)
+    elif recommended_data.empty:
+        st.write("No restaurants found based on the selected criteria. Please modify your selection.")
+    else:
+        recommended_data = recommended_data.rename(columns={"name": "Name", "rating_val": "Rating", "nearest_station": "Nearest Station"})
+        
+        # Ensure that 'address' column is present in recommended_data
+        recommended_data = pd.merge(recommended_data, restaurants[['name', 'nearest_station', 'address']], 
+                                left_on=['Name', 'Nearest Station'], 
+                                right_on=['name', 'nearest_station'], 
+                                how='left').drop_duplicates()
 
-    # Geocode the addresses of the recommended restaurants only
-    recommended_data['latitude'], recommended_data['longitude'] = zip(*recommended_data['address'].map(get_coordinates_from_address))
+        # Geocode the addresses of the recommended restaurants only
+        recommended_data['latitude'], recommended_data['longitude'] = zip(*recommended_data['address'].map(get_coordinates_from_address))
 
-    st.table(recommended_data[['Name', 'Rating', 'Nearest Station']])
+        st.table(recommended_data[['Name', 'Rating', 'Nearest Station']])
 
-    # Display map
-    st.map(recommended_data[['latitude', 'longitude']])
+        # Display map
+        st.map(recommended_data[['latitude', 'longitude']])
