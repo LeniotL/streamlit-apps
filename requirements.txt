@@ -1,0 +1,10 @@
+pip==23.2.1
+streamlit
+pandas
+numpy
+scikit-learn
+boto3
+s3fs
+h5py
+requests
+streamlit_lottie
