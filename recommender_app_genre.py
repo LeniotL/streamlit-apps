@@ -81,7 +81,10 @@ if st.button("Recommend"):
     recommended_data = recommended_data.rename(columns={"name": "Name", "rating_val": "Rating", "nearest_station": "Nearest Station"})
     
     # Ensure that 'address' column is present in recommended_data
-    recommended_data = pd.merge(recommended_data, restaurants[['name', 'address']], left_on='Name', right_on='name', how='left')
+    recommended_data = pd.merge(recommended_data, restaurants[['name', 'nearest_station', 'address']], 
+                            left_on=['Name', 'Nearest Station'], 
+                            right_on=['name', 'nearest_station'], 
+                            how='left').drop_duplicates()
 
     # Geocode the addresses of the recommended restaurants only
     recommended_data['latitude'], recommended_data['longitude'] = zip(*recommended_data['address'].map(get_coordinates_from_address))
