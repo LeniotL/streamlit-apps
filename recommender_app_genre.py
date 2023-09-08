@@ -34,7 +34,7 @@ st_lottie(lottie_data_from_file, speed=1, width=800, height=500, key="initial")
 
 
 # Function to recommend restaurants based on selected genres and optionally, a nearest station
-def recommend_by_genre(input_genres, nearest_station=None, cosine_sim=cosine_sim, min_similarity=0.5):
+def recommend_by_genre(input_genres, nearest_station=None, cosine_sim=cosine_sim, min_similarity=0.3):
     # Check if all selected genres exist in the dataset
     for genre in input_genres:
         if genre not in genres_df.columns:
